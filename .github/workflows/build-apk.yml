@@ -21,18 +21,34 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
       with:
-        gradle-version: '8.5'
+        gradle-version: '8.2'
 
-    - name: Ensure App Directories & Copy Logo
+    - name: Fix Project Resources & Layout
       run: |
+        mkdir -p app/src/main/res/values
         mkdir -p app/src/main/res/drawable
         mkdir -p app/src/main/res/mipmap-hdpi
-        mkdir -p app/src/main/res/values
+        
+        # Create minimal styles.xml
+        cat << 'EOF' > app/src/main/res/values/styles.xml
+        <resources>
+            <style name="Theme.AppCompat.Light.NoActionBar" parent="Base.Theme.AppCompat.Light.NoActionBar"/>
+        </resources>
+        EOF
+
+        # Create minimal strings.xml
+        cat << 'EOF' > app/src/main/res/values/strings.xml
+        <resources>
+            <string name="app_name">Kingdom Crush</string>
+        </resources>
+        EOF
+
+        # Copy logo if present
         cp ic_launcher.png app/src/main/res/drawable/ic_launcher.png || true
         cp ic_launcher.png app/src/main/res/mipmap-hdpi/ic_launcher.png || true
 
     - name: Build Debug APK
-      run: gradle assembleDebug --stacktrace
+      run: gradle assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
