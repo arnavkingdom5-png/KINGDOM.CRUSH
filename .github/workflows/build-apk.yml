@@ -21,15 +21,8 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
 
-    - name: Build Debug APK with Gradle Wrapper
-      run: |
-        chmod +x gradlew || true
-        ./gradlew assembleDebug --no-daemon
-      continue-on-error: true
-
-    - name: Fallback Build
-      if: steps.build.outcome != 'success'
-      run: gradle assembleDebug --no-daemon
+    - name: Build Debug APK
+      run: gradle assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
